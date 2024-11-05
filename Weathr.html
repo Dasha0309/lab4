@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Улаанбаатарын Цаг Агаар</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        #weatherInfo {
+            margin-top: 30px;
+            padding: 10px;
+            background-color: #e0f7fa;
+            border-radius: 5px;
+            display: none;
+        }
+
+        #weatherResult {
+            font-size: 18px;
+            color: #00796b;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Улаанбаатарын Цаг Агаар</h1>
+        <div id="weatherInfo">
+            <h3>Одоогийн цаг агаар:</h3>
+            <p id="weatherResult">Цаг агаарын мэдээлэл авч байна...</p>
+        </div>
+    </div>
+
+    <script>
+        // OpenWeatherMap API түлхүүрийг энд хийгээрэй (API_KEY хувьсагчид тусгай түлхүүрээ оруулна)
+        const apiKey = '3957f34794313c41954ac427ce7e9ea1'; // API түлхүүрээ энд оруулна уу
+        const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=Ulaanbaatar&units=metric&lang=mn&appid=${apiKey}`;
+
+        function fetchWeather() {
+            fetch(weatherUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.cod === 200) {
+                        const weatherDescription = data.weather[0].description;
+                        const temperature = data.main.temp;
+                        const humidity = data.main.humidity;
+                        const windSpeed = data.wind.speed;
+
+                        // Цаг агаарын мэдээллийг дэлгэц дээр гаргах
+                        document.getElementById("weatherResult").innerHTML = `
+                            <strong>Температур:</strong> ${temperature}°C<br>
+                            <strong>Цаг агаар:</strong> ${weatherDescription}<br>
+                            <strong>Нойтон:</strong> ${humidity}%<br>
+                            <strong>Салхи:</strong> ${windSpeed} м/с
+                        `;
+                        document.getElementById("weatherInfo").style.display = "block";
+                    } else {
+                        document.getElementById("weatherResult").innerHTML = "Цаг агаарын мэдээлэл авахад алдаа гарлаа.";
+                        document.getElementById("weatherInfo").style.display = "block";
+                    }
+                })
+                .catch(error => {
+                    console.error("Алдаа гарлаа:", error);
+                    document.getElementById("weatherResult").innerHTML = "Цаг агаарын мэдээлэл авахад алдаа гарлаа.";
+                    document.getElementById("weatherInfo").style.display = "block";
+                });
+        }
+
+        // Хуудас ачаалж байх үед цаг агаарын мэдээллийг авна
+        window.onload = fetchWeather;
+    </script>
+
+</body>
+</html>
